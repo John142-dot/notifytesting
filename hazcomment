@@ -1,0 +1,51 @@
+-- NotificationLib.lua
+local NotificationLib = {}
+NotificationLib.__index = NotificationLib
+
+function NotificationLib.NotifyTitle(title, description)
+    local playerGui = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+    local screenGui = Instance.new("ScreenGui")
+    local frame = Instance.new("Frame")
+    local titleLabel = Instance.new("TextLabel")
+    local descriptionLabel = Instance.new("TextLabel")
+
+    screenGui.Parent = playerGui
+    frame.Parent = screenGui
+    frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    frame.Size = UDim2.new(0, 300, 0, 100)
+    frame.Position = UDim2.new(1, 0, 0.5, -50) -- Start off-screen
+
+    titleLabel.Parent = frame
+    titleLabel.Text = title
+    titleLabel.Size = UDim2.new(1, 0, 0.5, 0)
+    titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+
+    descriptionLabel.Parent = frame
+    descriptionLabel.Text = description
+    descriptionLabel.Size = UDim2.new(1, 0, 0.5, 0)
+    descriptionLabel.Position = UDim2.new(0, 0, 0.5, 0)
+    descriptionLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+
+    -- Tween to slide in and out
+    local TweenService = game:GetService("TweenService")
+    
+    local slideInTween = TweenService:Create(frame,
+        TweenInfo.new(0.5),
+        { Position = UDim2.new(0.5, -150, 0.5, -50) })
+    
+    local slideOutTween = TweenService:Create(frame,
+        TweenInfo.new(0.5),
+        { Position = UDim2.new(1, 0, 0.5, -50) })
+
+    slideInTween:Play()
+    
+    slideInTween.Completed:Wait() -- Wait for slide in to complete
+    wait(3) -- Display for a few seconds
+    slideOutTween:Play()
+    
+    slideOutTween.Completed:Connect(function()
+        screenGui:Destroy()
+    end)
+end
+
+return NotificationLib
